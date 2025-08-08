@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ITagCategory } from '../../types/interfaces';
+import { ITagCategory, EPrecisionType, ETagCategoryStatus, EMetadataComponent, EMetadataInputType, EMetadataSelectMode } from '../../types/interfaces';
 import TagCategoryForm from './TagCategoryForm';
 import TagCategoryList from './TagCategoryList';
 import sampleData from '../../data/sampleData.json';
@@ -10,11 +10,32 @@ const TagCategoryManager: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // Load sample data on component mount
-    const sampleCategory: ITagCategory = {
-      ...sampleData,
-      lastUpdatedAt: sampleData.lastUpdatedAt || sampleData.createdAt || Date.now()
-    } as ITagCategory;
+    // Load sample data on component mount and convert to proper types
+    const convertSampleData = (data: any): ITagCategory => {
+      return {
+        id: data.id,
+        gameId: data.gameId,
+        group: data.group,
+        name: data.name,
+        precisionType: data.precisionType as EPrecisionType,
+        status: data.status as ETagCategoryStatus,
+        metadataConfig: data.metadataConfig.map((config: any) => ({
+          ...config,
+          component: config.component as EMetadataComponent,
+          type: config.type as EMetadataInputType,
+          mode: config.mode as EMetadataSelectMode
+        })),
+        subCategories: data.subCategories,
+        isParentTag: data.isParentTag,
+        isReplay: data.isReplay,
+        nameStructure: data.nameStructure,
+        createdAt: data.createdAt,
+        lastUpdatedAt: data.lastUpdatedAt || data.createdAt || Date.now(),
+        deleted: data.deleted || false
+      };
+    };
+
+    const sampleCategory = convertSampleData(sampleData);
     setTagCategories([sampleCategory]);
   }, []);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ITagCategory, IMetadataConfig, EPrecisionType, ETagCategoryStatus, EMetadataComponent, EMetadataInputType, EMetadataSelectMode } from '../../types/interfaces';
+import { ITagCategory, IMetadataConfig, EPrecisionType, ETagCategoryStatus } from '../../types/interfaces';
 import MetadataConfigForm from '../Metadata/MetadataConfigForm';
 
 interface TagCategoryFormProps {
@@ -39,13 +39,6 @@ const TagCategoryForm: React.FC<TagCategoryFormProps> = ({ category, onSave, onC
     setFormData(prev => ({
       ...prev,
       metadataConfig: configs
-    }));
-  };
-
-  const handleSubCategoriesChange = (subCategories: Record<string, {label: string; config: IMetadataConfig[]}>) => {
-    setFormData(prev => ({
-      ...prev,
-      subCategories
     }));
   };
 

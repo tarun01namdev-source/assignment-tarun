@@ -11,7 +11,11 @@ const TagCategoryManager: React.FC = () => {
 
   useEffect(() => {
     // Load sample data on component mount
-    setTagCategories([sampleData as ITagCategory]);
+    const sampleCategory: ITagCategory = {
+      ...sampleData,
+      lastUpdatedAt: sampleData.lastUpdatedAt || sampleData.createdAt || Date.now()
+    } as ITagCategory;
+    setTagCategories([sampleCategory]);
   }, []);
 
   const handleAddCategory = (category: ITagCategory) => {

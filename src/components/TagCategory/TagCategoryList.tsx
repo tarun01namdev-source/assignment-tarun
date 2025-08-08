@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ITagCategory } from '../../types/interfaces';
+import TagCategoryDetails from './TagCategoryDetails';
 
 interface TagCategoryListProps {
   categories: ITagCategory[];
@@ -8,6 +9,8 @@ interface TagCategoryListProps {
 }
 
 const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, onDelete }) => {
+  const [selectedCategory, setSelectedCategory] = useState<ITagCategory | null>(null);
+
   if (categories.length === 0) {
     return (
       <div className="no-categories">
@@ -15,6 +18,14 @@ const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, o
       </div>
     );
   }
+
+  const handleViewDetails = (category: ITagCategory) => {
+    setSelectedCategory(category);
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedCategory(null);
+  };
 
   return (
     <div className="tag-category-list">
@@ -66,6 +77,13 @@ const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, o
                   <div className="action-buttons">
                     <button
                       className="button"
+                      onClick={() => handleViewDetails(category)}
+                      style={{ fontSize: '12px', padding: '5px 10px', marginRight: '5px', backgroundColor: '#17a2b8' }}
+                    >
+                      View
+                    </button>
+                    <button
+                      className="button"
                       onClick={() => onEdit(category)}
                       style={{ fontSize: '12px', padding: '5px 10px', marginRight: '5px' }}
                     >
@@ -89,6 +107,13 @@ const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, o
           </tbody>
         </table>
       </div>
+
+      {selectedCategory && (
+        <TagCategoryDetails
+          category={selectedCategory}
+          onClose={handleCloseDetails}
+        />
+      )}
     </div>
   );
 };

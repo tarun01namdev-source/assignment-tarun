@@ -8,9 +8,10 @@ interface TagCategoryListProps {
   categories: ITagCategory[];
   onEdit: (category: ITagCategory) => void;
   onDelete: (id: string) => void;
+  onView: (category: ITagCategory) => void;
 }
 
-const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, onDelete }) => {
+const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, onDelete, onView }) => {
   const [selectedCategory, setSelectedCategory] = useState<ITagCategory | null>(null);
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
@@ -24,6 +25,7 @@ const TagCategoryList: React.FC<TagCategoryListProps> = ({ categories, onEdit, o
 
   const handleViewDetails = (category: ITagCategory) => {
     setSelectedCategory(category);
+    onView(category);
   };
 
   const handleCloseDetails = () => {

@@ -2,12 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { ITagCategory, EPrecisionType, ETagCategoryStatus, EMetadataComponent, EMetadataInputType, EMetadataSelectMode } from '../../types/interfaces';
 import TagCategoryForm from './TagCategoryForm';
 import TagCategoryList from './TagCategoryList';
+import TagCategoryDetails from './TagCategoryDetails';
 import sampleData from '../../data/sampleData.json';
+import styles from './TagCategoryManager.module.scss';
 
-const TagCategoryManager: React.FC = () => {
+type ViewType = 'home' | 'categories' | 'details' | 'form';
+
+interface TagCategoryManagerProps {
+  onNavigate?: (view: ViewType) => void;
+  currentView?: ViewType;
+}
+
+const TagCategoryManager: React.FC<TagCategoryManagerProps> = ({ onNavigate, currentView }) => {
   const [tagCategories, setTagCategories] = useState<ITagCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ITagCategory | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     // Load sample data on component mount and convert to proper types
@@ -71,6 +81,13 @@ const TagCategoryManager: React.FC = () => {
   const handleEditClick = (category: ITagCategory) => {
     setSelectedCategory(category);
     setIsEditing(true);
+    setShowDetails(false);
+  };
+
+  const handleViewClick = (category: ITagCategory) => {
+    setSelectedCategory(category);
+    setShowDetails(true);
+    setIsEditing(false);
   };
 
   const handleCancelEdit = () => {
@@ -78,23 +95,42 @@ const TagCategoryManager: React.FC = () => {
     setSelectedCategory(null);
   };
 
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+    setSelectedCategory(null);
+  };
+
+  const handleBackToHome = () => {
+    if (onNavigate) {
+      onNavigate('home');
+    }
+  };
+
   const activeCategories = tagCategories.filter(cat => !cat.deleted);
 
   return (
-    <div className="tag-category-manager">
-      <div className="card">
-        <h2>Tag Category Management</h2>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <button 
+            className={styles.backButton}
+            onClick={handleBackToHome}
+            aria-label="Back to home"
+          >
+            ← Back to Home
+          </button>
+          <h2>Tag Category Management</h2>
+        </div>
         <button 
-          className="button" 
+          className={styles.addButton}
           onClick={() => setIsEditing(true)}
-          style={{ marginBottom: '20px' }}
         >
-          Add New Tag Category
+          + Add New Tag Category
         </button>
       </div>
 
       {isEditing && (
-        <div className="card">
+        <div className={styles.formContainer}>
           <TagCategoryForm
             category={selectedCategory}
             onSave={selectedCategory ? handleEditCategory : handleAddCategory}
@@ -103,13 +139,25 @@ const TagCategoryManager: React.FC = () => {
         </div>
       )}
 
-      <div className="card">
-        <TagCategoryList
-          categories={activeCategories}
-          onEdit={handleEditClick}
-          onDelete={handleDeleteCategory}
-        />
-      </div>
+      {showDetails && selectedCategory && (
+        <div className={styles.detailsContainer}>
+          <TagCategoryDetails
+            category={selectedCategory}
+            onClose={handleCloseDetails}
+          />
+        </div>
+      )}
+
+      {!isEditing && !showDetails && (
+        <div className={styles.listContainer}>
+          <TagCategoryList
+            categories={activeCategories}
+            onEdit={handleEditClick}
+            onDelete={handleDeleteCategory}
+            onView={handleViewClick}
+          />
+        </div>
+      )}
     </div>
   );
 };

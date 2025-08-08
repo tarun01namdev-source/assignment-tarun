@@ -1,6 +1,7 @@
 import React from 'react';
 import { ITagCategory } from '../../types/interfaces';
 import { formatDate } from '../../utils/helpers';
+import styles from './TagCategoryDetails.module.scss';
 
 interface TagCategoryDetailsProps {
   category: ITagCategory;
@@ -9,57 +10,66 @@ interface TagCategoryDetailsProps {
 
 const TagCategoryDetails: React.FC<TagCategoryDetailsProps> = ({ category, onClose }) => {
   return (
-    <div className="tag-category-details card">
-      <div className="details-header">
-        <h3>{category.name}</h3>
-        <button className="button" onClick={onClose} style={{ backgroundColor: '#6c757d' }}>
-          Close
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <button 
+            className={styles.backButton}
+            onClick={onClose}
+            aria-label="Go back"
+          >
+            ← Back
+          </button>
+          <h3>{category.name}</h3>
+        </div>
+        <button className={styles.closeButton} onClick={onClose}>
+          ×
         </button>
       </div>
 
-      <div className="details-content">
-        <div className="detail-section">
+      <div className={styles.content}>
+        <div className={styles.section}>
           <h4>Basic Information</h4>
-          <div className="detail-grid">
-            <div className="detail-item">
+          <div className={styles.grid}>
+            <div className={styles.item}>
               <label>ID:</label>
               <span>{category.id}</span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Game ID:</label>
               <span>{category.gameId}</span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Group:</label>
               <span>{category.group.label}</span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Status:</label>
-              <span className={`status-badge ${category.status.toLowerCase()}`}>
+              <span className={`${styles.statusBadge} ${styles[category.status.toLowerCase()]}`}>
                 {category.status}
               </span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Precision Type:</label>
               <span>{category.precisionType}</span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Parent Tag:</label>
-              <span className={`badge ${category.isParentTag ? 'yes' : 'no'}`}>
+              <span className={`${styles.badge} ${category.isParentTag ? styles.yes : styles.no}`}>
                 {category.isParentTag ? 'Yes' : 'No'}
               </span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Replay:</label>
-              <span className={`badge ${category.isReplay ? 'yes' : 'no'}`}>
+              <span className={`${styles.badge} ${category.isReplay ? styles.yes : styles.no}`}>
                 {category.isReplay ? 'Yes' : 'No'}
               </span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Created:</label>
               <span>{formatDate(category.createdAt)}</span>
             </div>
-            <div className="detail-item">
+            <div className={styles.item}>
               <label>Last Updated:</label>
               <span>{formatDate(category.lastUpdatedAt)}</span>
             </div>
@@ -67,16 +77,16 @@ const TagCategoryDetails: React.FC<TagCategoryDetailsProps> = ({ category, onClo
         </div>
 
         {category.metadataConfig.length > 0 && (
-          <div className="detail-section">
+          <div className={styles.section}>
             <h4>Metadata Configuration ({category.metadataConfig.length} fields)</h4>
-            <div className="metadata-list">
+            <div className={styles.metadataList}>
               {category.metadataConfig.map((config, index) => (
-                <div key={index} className="metadata-item card" style={{ padding: '10px', marginBottom: '10px' }}>
-                  <div className="metadata-header">
+                <div key={index} className={styles.metadataItem}>
+                  <div className={styles.metadataHeader}>
                     <strong>{config.label}</strong>
-                    <span className="metadata-type">{config.component}</span>
+                    <span className={styles.metadataType}>{config.component}</span>
                   </div>
-                  <div className="metadata-details">
+                  <div className={styles.metadataDetails}>
                     <div>Key: {config.key}</div>
                     <div>Required: {config.required ? 'Yes' : 'No'}</div>
                     <div>Read Only: {config.readOnly ? 'Yes' : 'No'}</div>
@@ -97,20 +107,20 @@ const TagCategoryDetails: React.FC<TagCategoryDetailsProps> = ({ category, onClo
         )}
 
         {Object.keys(category.subCategories).length > 0 && (
-          <div className="detail-section">
+          <div className={styles.section}>
             <h4>Sub Categories ({Object.keys(category.subCategories).length})</h4>
-            <div className="subcategories-list">
+            <div className={styles.subcategoriesList}>
               {Object.entries(category.subCategories).map(([key, subCategory]) => (
-                <div key={key} className="subcategory-item card" style={{ padding: '10px', marginBottom: '10px' }}>
-                  <div className="subcategory-header">
+                <div key={key} className={styles.subcategoryItem}>
+                  <div className={styles.subcategoryHeader}>
                     <strong>{subCategory.label}</strong>
-                    <span className="subcategory-key">({key})</span>
+                    <span className={styles.subcategoryKey}>({key})</span>
                   </div>
                   {subCategory.config.length > 0 && (
-                    <div className="subcategory-config">
+                    <div className={styles.subcategoryConfig}>
                       <div>Config Fields: {subCategory.config.length}</div>
                       {subCategory.config.map((config, index) => (
-                        <div key={index} className="config-item" style={{ marginLeft: '20px', fontSize: '14px' }}>
+                        <div key={index} className={styles.configItem}>
                           • {config.label} ({config.key}) - {config.component}
                         </div>
                       ))}
@@ -123,13 +133,13 @@ const TagCategoryDetails: React.FC<TagCategoryDetailsProps> = ({ category, onClo
         )}
 
         {category.nameStructure.length > 0 && (
-          <div className="detail-section">
+          <div className={styles.section}>
             <h4>Name Structure</h4>
-            <div className="name-structure">
+            <div className={styles.nameStructure}>
               {category.nameStructure.map((item, index) => (
-                <span key={index} className="structure-item">
+                <span key={index} className={styles.structureItem}>
                   {item}
-                  {index < category.nameStructure.length - 1 && <span className="separator"> → </span>}
+                  {index < category.nameStructure.length - 1 && <span className={styles.separator}> → </span>}
                 </span>
               ))}
             </div>
